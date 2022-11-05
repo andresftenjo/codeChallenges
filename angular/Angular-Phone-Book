@@ -1,0 +1,93 @@
+// @ts-ignore
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+
+interface ContactInfo {
+  firstName: string;
+  lastName: string;
+  phone: number;
+}
+
+@Component({
+  selector: 'app-area',
+  template: `
+    <div class="form-wrapper">
+      <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)">
+        <div class="form-control">
+          <label for="firstName">First name</label>
+          <input type="text" name="firstName" id="firstName" 
+          class="userFirstname"
+          formControlName="firstName"
+        >
+        </div>
+        <div class="form-control">
+          <label for="lastName">Last name</label>
+          <input type="text" name="lastName" id="lastName" 
+          class="userLastname" formControlName="lastName">
+        </div>
+        <div class="form-control">
+          <label for="phoneNumber">Phone number</label>
+          <input type="tel" name="phoneNumber" id="phoneNumber" 
+          class="userPhone" formControlName="phone">
+        </div>
+        <div class="form-control">
+          <input type="submit" value="Submit" class="submitButton">
+        </div>
+      </form>
+    <div>
+    <div class="informationTable" *ngIf="currentContacts.length">
+      <table>
+        <tr>
+          <th>First Name</th><th>Last Name</th><th>Phone</th>
+        </tr>
+        <tr *ngFor="let contact of currentContacts">
+          <td>{{contact.firstName}}</td>
+          <td>{{contact.lastName}}</td>
+          <td>{{contact.phone}}</td>
+        </tr>
+      </table>
+    </div>`,
+  styles: [`
+    .form-control { margin-bottom: 0.5rem; }
+    label { font-weight: bold; display: block;}
+    table {
+      margin-top: 1rem;
+      background-color: #c5e4ff;
+      margin: 0 0 40px 0;
+      width: 100%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      display: table;
+    }
+    .informationTable{
+      margin-top: 1rem;
+    }
+  `]
+})
+
+export class MainAppComponent implements OnInit {
+
+  formGroup;
+  // code goes here
+  currentContacts: ContactInfo[] = [];
+  constructor(private formBuilder: FormBuilder){
+    this.formGroup = this.formBuilder.group({
+      firstName: 'Coder',
+      lastName: 'Byte',
+      phone: '8885559999'
+    })
+  }
+  ngOnInit() { 
+    
+  }
+
+  onSubmit(formData) {
+    const newContact: ContactInfo = {
+      firstName: formData['firstName'],
+      lastName: formData['lastName'],
+      phone: formData['phone']
+    }
+
+    this.currentContacts.push(newContact);
+    this.currentContacts.sort((a,b) => (a.lastName < b.lastName) ? -1 : 1);
+  }
+}
